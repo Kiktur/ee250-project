@@ -1,20 +1,15 @@
 import paho.mqtt.client as mqtt
 import tkinter as tk
 
-
+# Defines topics to send and receive from
 rec_topic="vagutier_ee250_project"
 send_topic="vagutier_ee250_project_1"
 
-# emotion_label = None
 
 def on_connect(client, userdata, flags, rc):
-    """Once our client has successfully connected, it makes sense to subscribe to
-    all the topics of interest. Also, subscribing in on_connect() means that, 
-    if we lose the connection and the library reconnects for us, this callback
-    will be called again thus renewing the subscriptions"""
+    """Subscribes to topic after successful connection"""
 
     print("Connected to server (i.e., broker) with result code "+str(rc))
-    #replace user with your USC username in all subscriptions
     client.subscribe(rec_topic)
     
     #Add the custom callbacks by indicating the topic and the name of the callback handle
@@ -25,7 +20,7 @@ def on_message(client, userdata, msg):
     # print("Custom callback  - topic: "+msg.payload.decode())
     print("Default callback - topic: " + msg.topic + "   msg: " + str(msg.payload, "utf-8"))
 
-
+# Define counters to keep track of instances for each emotion and a total number of messages received
 neutral_counter = 0
 happy_counter = 0
 sad_counter = 0
@@ -39,9 +34,12 @@ total_counter = 0
 def on_emotion_message(client, userdata, message):
     # print("Custom callback  - emotion: "+message.payload.decode())
     emotion = message.payload.decode()
+    # Reference global counter variables
     global total_counter, neutral_counter, happy_counter, sad_counter, angry_counter, fear_counter, surprise_counter, disgust_counter
     emotion_text = f"Current emotion is: {emotion}"
-    total_counter += 1
+    total_counter += 1 # Increment total on each message
+
+    # Determine the emotion that was sent and increment associated counter
     match emotion:
         case "Neutral":
             neutral_counter += 1
@@ -60,6 +58,7 @@ def on_emotion_message(client, userdata, message):
         case _:
             print("Unknown emotion")
 
+    # Update distribution of all emotions by dividing counter by total
     neutral_text = f"Neutral: {round(100 * (neutral_counter / total_counter), 2)}%"   
     happy_text = f"Happy: {round(100 * (happy_counter / total_counter), 2)}%" 
     sad_text = f"Sad: {round(100 * (sad_counter / total_counter), 2)}%" 
@@ -68,13 +67,15 @@ def on_emotion_message(client, userdata, message):
     surprise_text = f"Surprise: {round(100 * (surprise_counter / total_counter), 2)}%" 
     disgust_text = f"Disgust: {round(100 * (disgust_counter / total_counter), 2)}%" 
 
+    # Update all text labels in the tkinter window with new distributions
     window.after(0, update_emotion_labels, emotion_text, neutral_text, happy_text, sad_text, angry_text, fear_text, surprise_text, disgust_text)
 
-
+# Send MQTT message on button click
 def button_click():
     client.publish(send_topic, "Action")
     print("Button was clicked")
 
+# Replace text in each tkinter label with new distribution calculations
 def update_emotion_labels(emotion_text, neutral_text, happy_text, sad_text, angry_text, fear_text, surprise_text, disgust_text):
     emotion_label.config(text=emotion_text)
     neutral_label.config(text=neutral_text)
@@ -94,28 +95,22 @@ if __name__ == '__main__':
     client.on_message = on_message
     #attach the on_connect() callback function defined above to the mqtt client
     client.on_connect = on_connect
-
-    """Connect using the following hostname, port, and keepalive interval (in 
-    seconds). We added "host=", "port=", and "keepalive=" for illustrative 
-    purposes. You can omit this in python.
-        
-    The keepalive interval indicates when to send keepalive packets to the 
-    server in the event no messages have been published from or sent to this 
-    client. If the connection request is successful, the callback attached to
-    `client.on_connect` will be called."""    
+   
     client.connect(host="test.mosquitto.org", port=1883, keepalive=60)
 
-
+    # Define main window
     window = tk.Tk()
     window.title("EE250 Project")
     window.geometry("600x400")
 
+    # Make label for current emotion of the studier
     emotion_label = tk.Label(window, text="Waiting for message...", font=("Arial", 16))
     emotion_label.pack(pady=20)
 
     description_label = tk.Label(window, text="Distribution of emotions over session:", font=("Arial", 14))
     description_label.pack(pady=20)
 
+    # Define labels for all emotions and start distribution at 0%
     neutral_label = tk.Label(window, text="Neutral: 0%", font=("Arial", 12))
     neutral_label.pack()
 
@@ -137,10 +132,11 @@ if __name__ == '__main__':
     disgust_label = tk.Label(window, text="Disgust: 0%", font=("Arial", 12))
     disgust_label.pack()
 
-
-
+    # Create button to send action
     button = tk.Button(window, text="Send Action", command=button_click)
     button.pack()
+
+    # Start loops for receiving messages and keeping window open
     client.loop_start()
     window.mainloop()
 
