@@ -27,9 +27,9 @@ For action device:
 
 
 # Files related to ML model:
-haarcascade_frontalface_default.xml
-real-time-facial-emotion-classification-cnn-using-keras.ipynb
-model.h5
+* haarcascade_frontalface_default.xml
+* real-time-facial-emotion-classification-cnn-using-keras.ipynb
+* model.h5
 # Note: the xml file and the model.h5 file are necessary for running the studier python file. The python notebook is primarily for reference or for retraining the model if desired
 
 # Execution
