@@ -53,10 +53,6 @@ def on_connect(client, userdata, flags, rc):
     client.message_callback_add(rec_topic, on_action_message)
 
 
-"""This object (functions are objects!) serves as the default callback for
-messages received when another node publishes a message this client is
-subscribed to. By "default,"" we mean that this callback is called if a custom
-callback has not been registered using paho-mqtt's message_callback_add()."""
 def on_message(client, userdata, msg):
     # print("Custom callback  - topic: "+msg.payload.decode())
     print("Default callback - topic: " + msg.topic + "   msg: " + str(msg.payload, "utf-8"))
@@ -79,15 +75,7 @@ if __name__ == '__main__':
     client.on_message = on_message
     #attach the on_connect() callback function defined above to the mqtt client
     client.on_connect = on_connect
-
-    """Connect using the following hostname, port, and keepalive interval (in
-    seconds). We added "host=", "port=", and "keepalive=" for illustrative
-    purposes. You can omit this in python.
-       
-    The keepalive interval indicates when to send keepalive packets to the
-    server in the event no messages have been published from or sent to this
-    client. If the connection request is successful, the callback attached to
-    `client.on_connect` will be called."""    
+   
     client.connect(host="test.mosquitto.org", port=1883, keepalive=60)
 
 

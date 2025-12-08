@@ -8,7 +8,7 @@
 
 ## Requirements
 For all nodes:
-* Python
+* Python3
 * paho-mqtt
 * moquitto-clients
 
@@ -41,5 +41,4 @@ The action device node should run "action_device.py"
 
 The action device should be started before the monitor to ensure that action requests are fulfilled.
 These studier and monitor nodes can be activated in any order, but the session statistics for the monitor will only begin recording after the monitor starts its code. Any emotions exhibited by the studier before the monitor starts their code will not be recorded/displayed.
-
 
