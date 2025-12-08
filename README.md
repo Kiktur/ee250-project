@@ -1,5 +1,7 @@
 # EE250 Project
-# Victor Gutierrez, Angie Vasquez
+# Victor Gutierrez-(USC ID: 9841169875), Angie Vasquez-(USC ID: 5537473368)
+
+
 
 # NOTE: All content relating to the ML model used in this project came from the following repository from user SHAIK-AFSANA:
 # https://github.com/SHAIK-AFSANA/facialemotionrecognizerinrealtime
