@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
-import RPi.GPIO as GPIO       # <<< ADDED
-import time                   # <<< ADDED
+import RPi.GPIO as GPIO     
+import time                   
 
 # MQTT topic to receive from
 rec_topic="vagutier_ee250_project_1"
@@ -16,11 +16,13 @@ GPIO.setup(SERVO2_PIN, GPIO.OUT)
 pwm1 = GPIO.PWM(SERVO1_PIN, 50)     # (50 Hz)
 pwm2 = GPIO.PWM(SERVO2_PIN, 50)
 
-pwm1.start(0)
+# starting PWN with 0% duty
+pwm1.start(0)  
 pwm2.start(0)
 
+# converting angle in degrees to duty cycle value
 def set_angle(pwm, angle):     
-    duty = 2.5 + (angle / 18.0)
+    duty = 2.5 + (angle / 18.0) 
     pwm.ChangeDutyCycle(duty)  
     time.sleep(0.4)            
 
@@ -30,11 +32,11 @@ def move_servos_sequence():
     set_angle(pwm2, 90)     
     time.sleep(1)           
 
-    # move servo 1   
+    # move servo 1 then wait 2 sec
     set_angle(pwm1, 0) 
-    time.sleep(2)          #  (2 second delay)
+    time.sleep(2)          
 
-    # move servo 2    
+    # move servo 2 then wait 2 sec   
     set_angle(pwm2, 0)
     time.sleep(1)     
 
